@@ -22,6 +22,10 @@ const router = createBrowserRouter([
         Component: DocumentsPage,
       },
       {
+        path: "chat",
+        Component: ChatInterface,
+      },
+      {
         path: "chat/:id",
         Component: ChatInterface,
       },

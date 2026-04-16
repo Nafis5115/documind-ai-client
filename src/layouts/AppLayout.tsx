@@ -11,6 +11,7 @@ export interface AppLayoutContext {
   chats: ChatSession[];
   activeChat: string;
   setActiveChat: (id: string) => void;
+  createChat: (document?: Document) => string;
   addDocument: (file: File) => Document;
   deleteDocument: (id: string) => void;
   addMessage: (
@@ -60,8 +61,8 @@ const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
   };
 
   const handleCreateChat = () => {
-    const newid = state.createChat();
-    navigate(`/chat/${newid}`);
+    state.setActiveChat("");
+    navigate("/chat");
   };
 
   const handleDeleteChat = (idToDelete: string) => {
@@ -113,6 +114,7 @@ const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
                 chats: state.chats,
                 activeChat: activeChat?.id ?? state.activeChat,
                 setActiveChat: state.setActiveChat,
+                createChat: state.createChat,
                 addDocument: state.addDocument,
                 deleteDocument: state.deleteDocument,
                 addMessage: handleSendMessage,

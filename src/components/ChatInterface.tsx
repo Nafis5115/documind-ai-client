@@ -3,18 +3,10 @@ import {
   Send,
   Paperclip,
   Sparkles,
-  Zap,
-  ListChecks,
-  Brain,
   FileText,
 } from "lucide-react";
-import type { ChatSession } from "@/lib/store";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import type { AppLayoutContext } from "@/layouts/AppLayout";
-interface ChatInterfaceProps {
-  chat: ChatSession | undefined;
-  onSendMessage: (chatId: string, content: string) => void;
-}
 
 const TypingIndicator = () => {
   return (
@@ -34,8 +26,9 @@ const TypingIndicator = () => {
 };
 
 const ChatInterface = () => {
-  const { chats, addMessage } = useOutletContext<AppLayoutContext>();
+  const { chats, addMessage, createChat } = useOutletContext<AppLayoutContext>();
   const { id } = useParams();
+  const navigate = useNavigate();
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -46,8 +39,14 @@ const ChatInterface = () => {
   }, [chat?.messages, isTyping]);
 
   const handleSend = () => {
-    if (!input.trim() || !chat) return;
-    addMessage(chat.id, { role: "user", content: input.trim() });
+    const content = input.trim();
+    if (!content) return;
+
+    const chatId = chat?.id ?? createChat();
+    addMessage(chatId, { role: "user", content });
+    if (!chat?.id) {
+      navigate(`/chat/${chatId}`);
+    }
     setInput("");
     setIsTyping(true);
     setTimeout(() => setIsTyping(false), 2000);
@@ -67,21 +66,7 @@ const ChatInterface = () => {
     e.target.style.height = Math.min(e.target.scrollHeight, 160) + "px";
   };
 
-  // if (!chat) {
-  //   return (
-  //     <div className="flex-1 flex items-center justify-center">
-  //       <div className="text-center animate-fade-in">
-  //         <div className="w-20 h-20 rounded-3xl gradient-bg-primary mx-auto mb-6 flex items-center justify-center glow-blue floating">
-  //           <FileText className="w-10 h-10 text-primary-foreground" />
-  //         </div>
-  //         <h2 className="text-2xl font-bold gradient-text mb-2">Welcome to DocuMind AI</h2>
-  //         <p className="text-muted-foreground max-w-md">Upload a document and start chatting to unlock intelligent insights.</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  const isEmpty = chat.messages.length === 0;
+  const isEmpty = !chat || chat.messages.length === 0;
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -102,7 +87,7 @@ const ChatInterface = () => {
           </div>
         ) : (
           <>
-            {chat.messages.map((msg, i) => (
+            {chat?.messages.map((msg, i) => (
               <div
                 key={msg.id}
                 className={`flex items-end gap-3 animate-fade-in ${msg.role === "user" ? "justify-end" : ""}`}
