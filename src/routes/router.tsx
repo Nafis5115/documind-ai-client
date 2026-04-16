@@ -4,9 +4,9 @@ import DashboardPage from "../pages/DashboardPage";
 import { createBrowserRouter } from "react-router-dom";
 import ChatInterface from "../components/ChatInterface";
 import SettingsPage from "../pages/SettingsPage";
-import NotFound from "../pages/NotFound";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import NotFound from "../pages/NotFound";
 
 const router = createBrowserRouter([
   {

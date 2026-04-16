@@ -11,9 +11,6 @@ import {
 import ProfileSettings from "./settings/ProfileSettings";
 import SecuritySettings from "./settings/SecuritySettings";
 import BillingSettings from "./settings/BillingSettings";
-import AppearanceSettings from "./settings/AppearanceSettings";
-import NotificationSettings from "./settings/NotificationSettings";
-import LanguageSettings from "./settings/LanguageSettings";
 
 const sections = [
   {
@@ -39,38 +36,12 @@ const sections = [
       },
     ],
   },
-  {
-    title: "Preferences",
-    items: [
-      {
-        id: "appearance",
-        icon: Palette,
-        label: "Appearance",
-        desc: "Theme, colors, and display settings",
-      },
-      {
-        id: "notifications",
-        icon: Bell,
-        label: "Notifications",
-        desc: "Email and in-app notification preferences",
-      },
-      {
-        id: "language",
-        icon: Globe,
-        label: "Language",
-        desc: "Interface language and region",
-      },
-    ],
-  },
 ];
 
 const subPages: Record<string, React.ComponentType<{ onBack: () => void }>> = {
   profile: ProfileSettings,
   security: SecuritySettings,
   billing: BillingSettings,
-  appearance: AppearanceSettings,
-  notifications: NotificationSettings,
-  language: LanguageSettings,
 };
 
 const SettingsPage = () => {
