@@ -5,6 +5,7 @@ import { useAppState } from "../lib/store";
 import type { ChatMessage, ChatSession, Document } from "../lib/store";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
+import { useIsMobile } from "../hooks/use-mobile";
 
 export interface AppLayoutContext {
   documents: Document[];
@@ -30,6 +31,7 @@ const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (id && id !== state.activeChat) {
@@ -101,10 +103,12 @@ const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
       />
 
       <div className="flex-1 flex flex-col gap-3 min-w-0">
-        <TopBar
-          sidebarOpen={state.sidebarOpen}
-          setSidebarOpen={state.setSidebarOpen}
-        />
+        {isMobile === true && (
+          <TopBar
+            sidebarOpen={state.sidebarOpen}
+            setSidebarOpen={state.setSidebarOpen}
+          />
+        )}
 
         <main className="flex-1 flex gap-3 min-h-0">
           <div className="flex-1 glass-subtle rounded-2xl flex flex-col min-w-0 overflow-hidden">

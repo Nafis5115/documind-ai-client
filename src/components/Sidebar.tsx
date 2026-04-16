@@ -106,7 +106,7 @@ const Sidebar = ({
         className={`
         fixed md:relative z-50 h-full w-72 flex-shrink-0 transition-transform duration-300 ease-out
         glass-strong rounded-none md:rounded-2xl overflow-hidden flex flex-col
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-[110%] md:translate-x-0"}
       `}
       >
         {/* Logo */}
@@ -129,6 +129,7 @@ const Sidebar = ({
         <nav className="px-3 space-y-1">
           {navItems.map((item) => (
             <NavLink
+              onClick={() => setSidebarOpen(false)}
               to={item.to}
               key={item.to}
               className={({ isActive }) =>
@@ -201,6 +202,7 @@ const Sidebar = ({
                         }`}
                       onClick={() => {
                         setActiveChat(chat.id);
+                        setSidebarOpen(false);
                       }}
                       onMouseEnter={() => setHoveredChat(chat.id)}
                       onMouseLeave={() => setHoveredChat(null)}

@@ -1,10 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import {
-  Send,
-  Paperclip,
-  Sparkles,
-  FileText,
-} from "lucide-react";
+import { Send, Paperclip, Sparkles, FileText } from "lucide-react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import type { AppLayoutContext } from "@/layouts/AppLayout";
 
@@ -26,7 +21,8 @@ const TypingIndicator = () => {
 };
 
 const ChatInterface = () => {
-  const { chats, addMessage, createChat } = useOutletContext<AppLayoutContext>();
+  const { chats, addMessage, createChat } =
+    useOutletContext<AppLayoutContext>();
   const { id } = useParams();
   const navigate = useNavigate();
   const [input, setInput] = useState("");
@@ -106,37 +102,6 @@ const ChatInterface = () => {
                       ? msg.content
                       : JSON.stringify(msg.content)}
                   </div>
-                  {/* {msg.sources && msg.sources.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-border/30">
-                      <p className="text-xs text-muted-foreground mb-1.5">
-                        📎 Sources
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {msg.sources.map((s, i) => (
-                          <span
-                            key={i}
-                            className="text-xs px-2 py-1 rounded-lg bg-primary/10 text-primary border border-primary/20"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )} */}
-                  {/* {msg.role === "ai" && (
-                    <div className="mt-3 flex items-center gap-2">
-                      {["Summarize", "Simplify", "Extract insights"].map(
-                        (action) => (
-                          <button
-                            key={action}
-                            className="text-xs px-2.5 py-1 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
-                          >
-                            {action}
-                          </button>
-                        ),
-                      )}
-                    </div>
-                  )} */}
                 </div>
                 {msg.role === "user" && (
                   <div className="w-8 h-8 rounded-xl gradient-bg-primary flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold text-primary-foreground">
