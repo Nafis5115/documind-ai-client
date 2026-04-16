@@ -42,11 +42,7 @@ const stats = [
   },
 ];
 
-const DashboardPage = ({
-  documents,
-  chats,
-  setActivePage,
-}: DashboardPageProps) => {
+const DashboardPage = () => {
   return (
     <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8">
       {/* Welcome */}
@@ -88,14 +84,11 @@ const DashboardPage = ({
             <h2 className="text-lg font-semibold text-foreground">
               Recent Documents
             </h2>
-            <button
-              onClick={() => setActivePage("documents")}
-              className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
-            >
+            <button className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
               View all <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             {documents.slice(0, 4).map((doc) => (
               <div
                 key={doc.id}
@@ -120,7 +113,7 @@ const DashboardPage = ({
                 </span>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
 
         {/* Recent Chats */}
@@ -132,14 +125,11 @@ const DashboardPage = ({
             <h2 className="text-lg font-semibold text-foreground">
               Recent Chats
             </h2>
-            <button
-              onClick={() => setActivePage("chat")}
-              className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
-            >
+            <button className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
               View all <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             {chats.slice(0, 4).map((chat) => (
               <div
                 key={chat.id}
@@ -165,7 +155,7 @@ const DashboardPage = ({
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

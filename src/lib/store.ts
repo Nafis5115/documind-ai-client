@@ -81,8 +81,7 @@ export const sampleChats: ChatSession[] = [
 ];
 
 export const useAppState = () => {
-  const [activePage, setActivePage] = useState<string>('chat');
-  const [activeChat, setActiveChat] = useState<string>('1');
+  const [activeChat, setActiveChat] = useState<string>(sampleChats[0]?.id || '');
   const [chats, setChats] = useState<ChatSession[]>(sampleChats);
   const [documents, setDocuments] = useState<Document[]>(sampleDocuments);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -105,7 +104,7 @@ export const useAppState = () => {
 
   const createChat = useCallback((document?: Document) => {
     const newChat: ChatSession = {
-      id: `chat-${Date.now()}`,
+      id: `${Date.now()}`,
       title: getChatTitleFromDocument(document),
       messages: [],
       createdAt: new Date(),
@@ -113,7 +112,7 @@ export const useAppState = () => {
     };
     setChats(prev => [newChat, ...prev]);
     setActiveChat(newChat.id);
-    setActivePage('chat');
+
     return newChat.id;
   }, []);
 
@@ -153,7 +152,6 @@ export const useAppState = () => {
   }, []);
 
   return {
-    activePage, setActivePage,
     activeChat, setActiveChat,
     chats, documents,
     sidebarOpen, setSidebarOpen,

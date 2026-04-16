@@ -15,10 +15,9 @@ import {
 } from "lucide-react";
 import type { ChatSession, Document } from "@/lib/store";
 import type { User } from "@/lib/auth-store";
+import { NavLink } from "react-router-dom";
 
 interface SidebarProps {
-  activePage: string;
-  setActivePage: (page: string) => void;
   activeChat: string;
   setActiveChat: (id: string) => void;
   chats: ChatSession[];
@@ -34,10 +33,10 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "documents", label: "Documents", icon: FileText },
-  { id: "chat", label: "Chat", icon: MessageSquare },
-  { id: "settings", label: "Settings", icon: Settings },
+  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "documents", label: "Documents", icon: FileText },
+  // { to: "chat", label: "Chat", icon: MessageSquare },
+  { to: "settings", label: "Settings", icon: Settings },
 ];
 
 const groupChatsByDate = (chats: ChatSession[]) => {
@@ -62,8 +61,6 @@ const groupChatsByDate = (chats: ChatSession[]) => {
 };
 
 const Sidebar = ({
-  activePage,
-  setActivePage,
   activeChat,
   setActiveChat,
   chats,
@@ -131,22 +128,21 @@ const Sidebar = ({
         {/* Nav */}
         <nav className="px-3 space-y-1">
           {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActivePage(item.id);
-                if (window.innerWidth < 768) setSidebarOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                ${
-                  activePage === item.id
-                    ? "gradient-bg-primary text-primary-foreground glow-blue"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                }`}
+            <NavLink
+              to={item.to}
+              key={item.to}
+              className={({ isActive }) =>
+                `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 
+     ${
+       isActive
+         ? "gradient-bg-primary text-primary-foreground glow-blue"
+         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+     }`
+              }
             >
               <item.icon className="w-4.5 h-4.5" />
               {item.label}
-            </button>
+            </NavLink>
           ))}
         </nav>
 
@@ -205,7 +201,6 @@ const Sidebar = ({
                         }`}
                       onClick={() => {
                         setActiveChat(chat.id);
-                        setActivePage("chat");
                       }}
                       onMouseEnter={() => setHoveredChat(chat.id)}
                       onMouseLeave={() => setHoveredChat(null)}
@@ -262,14 +257,14 @@ const Sidebar = ({
         <div className="p-3 border-t border-border/50">
           <div className="flex items-center gap-3 px-2 py-2">
             <div className="w-8 h-8 rounded-full gradient-bg-accent flex items-center justify-center text-xs font-bold text-primary-foreground">
-              {user.initials}
+              {/* {user.initials} */}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground truncate">
-                {user.name}
+                {/* {user.name} */}
               </p>
               <p className="text-xs text-muted-foreground truncate">
-                {user.plan}
+                {/* {user.plan} */}
               </p>
             </div>
             <button

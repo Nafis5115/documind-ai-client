@@ -14,14 +14,8 @@ import {
   X,
   CheckCircle,
 } from "lucide-react";
-import type { Document } from "@/lib/store";
-
-interface DocumentsPageProps {
-  documents: Document[];
-  setActivePage: (page: string) => void;
-  onUpload: (file: File) => void;
-  onDelete: (id: string) => void;
-}
+import { useOutletContext } from "react-router-dom";
+import type { AppLayoutContext } from "@/layouts/AppLayout";
 
 const typeIcon = {
   pdf: FileText,
@@ -35,18 +29,14 @@ const typeColor = {
   image: "bg-[hsla(270,70%,60%,0.15)] text-[hsl(270,70%,60%)]",
 };
 
-const DocumentsPage = ({
-  documents,
-  setActivePage,
-  onUpload,
-  onDelete,
-}: DocumentsPageProps) => {
+const DocumentsPage = () => {
   const [view, setView] = useState<"grid" | "list">("grid");
   const [search, setSearch] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const { documents, addDocument, deleteDocument } =
+    useOutletContext<AppLayoutContext>();
   const filtered = documents.filter((d) =>
     d.name.toLowerCase().includes(search.toLowerCase()),
   );
@@ -54,7 +44,7 @@ const DocumentsPage = ({
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
     Array.from(files).forEach((file) => {
-      onUpload(file);
+      addDocument(file);
       setUploadSuccess(file.name);
       setTimeout(() => setUploadSuccess(null), 3000);
     });
@@ -200,17 +190,14 @@ const DocumentsPage = ({
                   )}
                 </div>
                 <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-all">
-                  <button
-                    onClick={() => setActivePage("chat")}
-                    className="flex-1 text-xs py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all flex items-center justify-center gap-1.5"
-                  >
+                  <button className="flex-1 text-xs py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all flex items-center justify-center gap-1.5">
                     <MessageSquare className="w-3 h-3" /> Chat
                   </button>
                   <button className="p-2 rounded-xl hover:bg-muted/50 transition-all text-muted-foreground">
                     <Download className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    onClick={() => onDelete(doc.id)}
+                    onClick={() => deleteDocument(doc.id)}
                     className="p-2 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all text-muted-foreground"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -252,17 +239,14 @@ const DocumentsPage = ({
                   })}
                 </span>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                  <button
-                    onClick={() => setActivePage("chat")}
-                    className="p-2 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all"
-                  >
+                  <button className="p-2 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all">
                     <MessageSquare className="w-4 h-4" />
                   </button>
                   <button className="p-2 rounded-lg hover:bg-muted/50 text-muted-foreground transition-all">
                     <Download className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => onDelete(doc.id)}
+                    onClick={() => deleteDocument(doc.id)}
                     className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
