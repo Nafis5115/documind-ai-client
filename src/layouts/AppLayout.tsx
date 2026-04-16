@@ -24,26 +24,11 @@ interface AppLayoutProps {
   onLogout: () => void;
 }
 
-const getPageFromPath = (pathname: string) => {
-  if (pathname.startsWith("/dashboard")) return "dashboard";
-  if (pathname.startsWith("/documents")) return "documents";
-  if (pathname.startsWith("/settings")) return "settings";
-  return "chat";
-};
-
-const getRouteForPage = (page: string) => {
-  if (page === "dashboard") return "/dashboard";
-  if (page === "documents") return "/documents";
-  if (page === "settings") return "/settings";
-  return "/chat";
-};
-
 const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
   const state = useAppState();
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const activePage = getPageFromPath(location.pathname);
 
   useEffect(() => {
     if (id && id !== state.activeChat) {
@@ -59,8 +44,11 @@ const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
     navigate(`/chat/${newid}`);
   };
 
-  const handleSendMessage = (id: string, content: string) => {
-    state.addMessage(id, { role: "user", content });
+  const handleSendMessage = (
+    id: string,
+    message: Omit<ChatMessage, "id" | "timestamp">,
+  ) => {
+    state.addMessage(id, message);
     setTimeout(() => {
       state.addMessage(id, {
         role: "ai",
@@ -115,7 +103,6 @@ const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
         <TopBar
           sidebarOpen={state.sidebarOpen}
           setSidebarOpen={state.setSidebarOpen}
-          activePage={activePage}
         />
 
         <main className="flex-1 flex gap-3 min-h-0">

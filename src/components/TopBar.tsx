@@ -3,10 +3,9 @@ import { Search, Menu, PanelRight } from "lucide-react";
 interface TopBarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
-  activePage: string;
 }
 
-const TopBar = ({ sidebarOpen, setSidebarOpen, activePage }: TopBarProps) => {
+const TopBar = ({ sidebarOpen, setSidebarOpen }: TopBarProps) => {
   return (
     <header className="h-14 flex items-center gap-3 px-4 glass-subtle rounded-2xl">
       {!sidebarOpen && (

@@ -16,29 +16,6 @@ interface ChatInterfaceProps {
   onSendMessage: (chatId: string, content: string) => void;
 }
 
-const suggestedPrompts = [
-  {
-    icon: Sparkles,
-    label: "Summarize",
-    prompt: "Summarize the key points of this document",
-  },
-  {
-    icon: Brain,
-    label: "Explain simply",
-    prompt: "Explain this document in simple terms",
-  },
-  {
-    icon: ListChecks,
-    label: "Key points",
-    prompt: "Extract the key points and action items",
-  },
-  {
-    icon: Zap,
-    label: "Extract insights",
-    prompt: "What are the most important insights?",
-  },
-];
-
 const TypingIndicator = () => {
   return (
     <div className="flex items-start gap-3 animate-fade-in">
@@ -122,33 +99,13 @@ const ChatInterface = () => {
               Ask me anything about your documents. I can summarize, explain,
               extract insights, and more.
             </p>
-            <div className="grid grid-cols-2 gap-3 max-w-lg w-full">
-              {suggestedPrompts.map((p) => (
-                <button
-                  key={p.label}
-                  onClick={() => {
-                    setInput(p.prompt);
-                    inputRef.current?.focus();
-                  }}
-                  className="glass-subtle p-4 rounded-2xl text-left hover:bg-muted/60 transition-all duration-200 group hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  <p.icon className="w-5 h-5 text-primary mb-2 group-hover:text-neon-cyan transition-colors" />
-                  <p className="text-sm font-medium text-foreground">
-                    {p.label}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                    {p.prompt}
-                  </p>
-                </button>
-              ))}
-            </div>
           </div>
         ) : (
           <>
             {chat.messages.map((msg, i) => (
               <div
                 key={msg.id}
-                className={`flex items-start gap-3 animate-fade-in ${msg.role === "user" ? "justify-end" : ""}`}
+                className={`flex items-end gap-3 animate-fade-in ${msg.role === "user" ? "justify-end" : ""}`}
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
                 {msg.role === "ai" && (
@@ -164,7 +121,7 @@ const ChatInterface = () => {
                       ? msg.content
                       : JSON.stringify(msg.content)}
                   </div>
-                  {msg.sources && msg.sources.length > 0 && (
+                  {/* {msg.sources && msg.sources.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-border/30">
                       <p className="text-xs text-muted-foreground mb-1.5">
                         📎 Sources
@@ -180,8 +137,8 @@ const ChatInterface = () => {
                         ))}
                       </div>
                     </div>
-                  )}
-                  {msg.role === "ai" && (
+                  )} */}
+                  {/* {msg.role === "ai" && (
                     <div className="mt-3 flex items-center gap-2">
                       {["Summarize", "Simplify", "Extract insights"].map(
                         (action) => (
@@ -194,7 +151,7 @@ const ChatInterface = () => {
                         ),
                       )}
                     </div>
-                  )}
+                  )} */}
                 </div>
                 {msg.role === "user" && (
                   <div className="w-8 h-8 rounded-xl gradient-bg-primary flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold text-primary-foreground">
@@ -209,28 +166,9 @@ const ChatInterface = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggested chips when has messages */}
-      {!isEmpty && !isTyping && (
-        <div className="px-4 lg:px-8 pb-2 flex items-center gap-2 flex-wrap">
-          {suggestedPrompts.map((p) => (
-            <button
-              key={p.label}
-              onClick={() => {
-                setInput(p.prompt);
-                inputRef.current?.focus();
-              }}
-              className="text-xs px-3 py-1.5 rounded-full glass-subtle text-muted-foreground hover:text-foreground transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5"
-            >
-              <p.icon className="w-3 h-3" />
-              {p.label}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Input */}
       <div className="px-4 lg:px-8 pb-4 pt-2">
-        <div className="glass-strong rounded-2xl p-3 flex items-end gap-3 transition-all duration-300 focus-within:shadow-[0_0_30px_hsla(230,90%,62%,0.15)] glow-border">
+        <div className="glass-strong rounded-2xl p-3 flex items-end gap-3 transition-all duration-300 focus-within:shadow-[0_0_30px_hsla(230,90%,62%,0.15)]">
           <button className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all mb-0.5">
             <Paperclip className="w-5 h-5" />
           </button>
@@ -251,10 +189,6 @@ const ChatInterface = () => {
             <Send className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-center text-xs text-muted-foreground/40 mt-2">
-          DocuMind AI may produce inaccurate information. Always verify
-          important facts.
-        </p>
       </div>
     </div>
   );
