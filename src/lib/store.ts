@@ -87,6 +87,11 @@ export const useAppState = () => {
   const [documents, setDocuments] = useState<Document[]>(sampleDocuments);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const getChatTitleFromDocument = (document?: Document) => {
+    if (!document) return 'New Chat';
+
+    return document.name.replace(/\.[^.]+$/, '') || document.name;
+  };
 
   const addMessage = useCallback((chatId: string, message: Omit<ChatMessage, 'id' | 'timestamp'>) => {
     setChats(prev => prev.map(chat => {
@@ -98,12 +103,13 @@ export const useAppState = () => {
     }));
   }, []);
 
-  const createChat = useCallback(() => {
+  const createChat = useCallback((document?: Document) => {
     const newChat: ChatSession = {
       id: `chat-${Date.now()}`,
-      title: 'New Chat',
+      title: getChatTitleFromDocument(document),
       messages: [],
       createdAt: new Date(),
+      documentId: document?.id,
     };
     setChats(prev => [newChat, ...prev]);
     setActiveChat(newChat.id);

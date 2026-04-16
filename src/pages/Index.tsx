@@ -1,4 +1,4 @@
-import { useAppState, sampleDocuments } from "../lib/store";
+import { useAppState } from "../lib/store";
 import type { User } from "../lib/auth-store";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
@@ -17,8 +17,13 @@ const Index = ({ user, onLogout }: IndexProps) => {
   const state = useAppState();
   const activeChat = state.chats.find((c) => c.id === state.activeChat);
   const activeDoc = activeChat?.documentId
-    ? sampleDocuments.find((d) => d.id === activeChat.documentId)
+    ? state.documents.find((d) => d.id === activeChat.documentId)
     : undefined;
+
+  const handleSidebarUpload = (file: File) => {
+    const document = state.addDocument(file);
+    state.createChat(document);
+  };
 
   const handleSendMessage = (chatId: string, content: string) => {
     state.addMessage(chatId, { role: "user", content });
@@ -47,7 +52,7 @@ const Index = ({ user, onLogout }: IndexProps) => {
         onRenameChat={state.renameChat}
         sidebarOpen={state.sidebarOpen}
         setSidebarOpen={state.setSidebarOpen}
-        onUpload={(file) => state.addDocument(file)}
+        onUpload={handleSidebarUpload}
         user={user}
         onLogout={onLogout}
       />
