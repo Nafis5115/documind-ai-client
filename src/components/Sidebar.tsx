@@ -14,7 +14,6 @@ import {
   LogOut,
 } from "lucide-react";
 import type { ChatSession, Document } from "@/lib/store";
-import type { User } from "@/lib/auth-store";
 import { NavLink } from "react-router-dom";
 
 interface SidebarProps {
@@ -28,8 +27,6 @@ interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   onUpload: (file: File) => void;
-  user: User;
-  onLogout: () => void;
 }
 
 const navItems = [
@@ -70,8 +67,6 @@ const Sidebar = ({
   sidebarOpen,
   setSidebarOpen,
   onUpload,
-  user,
-  onLogout,
 }: SidebarProps) => {
   const [hoveredChat, setHoveredChat] = useState<string | null>(null);
   const [editingChat, setEditingChat] = useState<string | null>(null);
@@ -270,7 +265,6 @@ const Sidebar = ({
               </p>
             </div>
             <button
-              onClick={onLogout}
               title="Sign out"
               className="p-2 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
             >

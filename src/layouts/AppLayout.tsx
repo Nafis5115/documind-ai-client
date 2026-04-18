@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import type { User } from "../lib/auth-store";
 import { useAppState } from "../lib/store";
 import type { ChatMessage, ChatSession, Document } from "../lib/store";
 import Sidebar from "../components/Sidebar";
@@ -21,18 +20,12 @@ export interface AppLayoutContext {
   ) => void;
 }
 
-interface AppLayoutProps {
-  user: User;
-  onLogout: () => void;
-}
-
-const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
+const AppLayout = () => {
   const state = useAppState();
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
   const isMobile = useIsMobile();
-
   useEffect(() => {
     if (id && id !== state.activeChat) {
       state.setActiveChat(id);
@@ -95,11 +88,6 @@ const AppLayout = ({ user, onLogout }: AppLayoutProps) => {
         sidebarOpen={state.sidebarOpen}
         setSidebarOpen={state.setSidebarOpen}
         onUpload={handleSidebarUpload}
-        user={user}
-        onLogout={() => {
-          onLogout();
-          navigate("/login");
-        }}
       />
 
       <div className="flex-1 flex flex-col gap-3 min-w-0">
