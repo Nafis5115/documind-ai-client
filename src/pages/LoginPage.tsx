@@ -9,26 +9,24 @@ import {
   Loader2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+type LoginFormData = {
+  email: string;
+  password: string;
+};
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>();
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setError("");
-  //   if (!email || !password) {
-  //     setError("Please fill in all fields");
-  //     return;
-  //   }
-  //   try {
-  //     await onLogin(email, password);
-  //   } catch {
-  //     setError("Invalid credentials. Try again.");
-  //   }
-  // };
+  const handleLogin = (data: LoginFormData) => {
+    console.log(data);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
@@ -58,13 +56,7 @@ const LoginPage = () => {
             </p>
           </div>
 
-          <form className="space-y-4">
-            {error && (
-              <div className="px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm animate-fade-in-fast">
-                {error}
-              </div>
-            )}
-
+          <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Email
@@ -72,9 +64,8 @@ const LoginPage = () => {
               <div className="relative group">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
+                  {...register("email")}
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
                 />
@@ -88,9 +79,8 @@ const LoginPage = () => {
               <div className="relative group">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
+                  {...register("password")}
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="w-full pl-10 pr-12 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
                 />

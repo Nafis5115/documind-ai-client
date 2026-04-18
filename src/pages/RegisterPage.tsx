@@ -8,44 +8,42 @@ import {
   ArrowRight,
   Loader2,
   User,
+  CloudFog,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import useAuth from "../hooks/useAuth";
+import LoadingSpinner from "../components/LoadingSpinner";
+
+type RegisterFormData = {
+  name: string;
+  email: string;
+  password: string;
+};
 
 const RegisterPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const { registerUser, updateUser, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>();
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setError("");
-  //   if (!name || !email || !password || !confirmPassword) {
-  //     setError("Please fill in all fields");
-  //     return;
-  //   }
-  //   if (password.length < 6) {
-  //     setError("Password must be at least 6 characters");
-  //     return;
-  //   }
-  //   if (password !== confirmPassword) {
-  //     setError("Passwords do not match");
-  //     return;
-  //   }
-  //   if (!agreed) {
-  //     setError("Please agree to the Terms of Service");
-  //     return;
-  //   }
-  //   try {
-  //     await onRegister(name, email, password);
-  //   } catch {
-  //     setError("Registration failed. Try again.");
-  //   }
-  // };
-
+  const handleRegister = async (data: RegisterFormData) => {
+    console.log(data);
+    try {
+      await registerUser(data.email, data.password).then((res: object) =>
+        console.log(res),
+      );
+      await updateUser({
+        displayName: data.name,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-background" />
@@ -75,13 +73,7 @@ const RegisterPage = () => {
             </p>
           </div>
 
-          <form className="space-y-4">
-            {error && (
-              <div className="px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm animate-fade-in-fast">
-                {error}
-              </div>
-            )}
-
+          <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Full Name
@@ -89,13 +81,15 @@ const RegisterPage = () => {
               <div className="relative group">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
+                  {...register("name", { required: true })}
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
+                  placeholder="Enter your name"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
                 />
               </div>
+              {errors.name?.type === "required" && (
+                <span className="text-sm text-red-500">Name is required</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -105,13 +99,15 @@ const RegisterPage = () => {
               <div className="relative group">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
+                  {...register("email", { required: true })}
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder="Enter your email"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
                 />
               </div>
+              {errors.email?.type === "required" && (
+                <span className="text-sm text-red-500">Email is required</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -121,10 +117,9 @@ const RegisterPage = () => {
               <div className="relative group">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
+                  {...register("password", { required: true, minLength: 6 })}
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min. 6 characters"
+                  placeholder="Enter your password"
                   className="w-full pl-10 pr-12 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
                 />
                 <button
@@ -139,9 +134,19 @@ const RegisterPage = () => {
                   )}
                 </button>
               </div>
+              {errors.password?.type === "required" && (
+                <span className="text-sm text-red-500">
+                  Password is required
+                </span>
+              )}
+              {errors.password?.type === "minLength" && (
+                <span className="text-sm text-red-500">
+                  Password must be 6 characters
+                </span>
+              )}
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Confirm Password
               </label>
@@ -149,15 +154,13 @@ const RegisterPage = () => {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
                   type={showPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repeat your password"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
                 />
               </div>
-            </div>
+            </div> */}
 
-            <label className="flex items-start gap-2 cursor-pointer">
+            {/* <label className="flex items-start gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={agreed}
@@ -180,7 +183,7 @@ const RegisterPage = () => {
                   Privacy Policy
                 </button>
               </span>
-            </label>
+            </label> */}
 
             <button
               type="submit"
