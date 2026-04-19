@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import useAuth from "../hooks/useAuth";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 type LoginFormData = {
   email: string;
@@ -18,14 +20,38 @@ type LoginFormData = {
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { loginUser, googleSignIn } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const handleLogin = (data: LoginFormData) => {
-    console.log(data);
+  const handleLogin = async (data: LoginFormData) => {
+    try {
+      await loginUser(data.email, data.password).then((res: object) =>
+        console.log(res),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await googleSignIn();
+      await axiosSecure
+        .post("/create-user", {
+          name: result.user?.displayName,
+          email: result.user?.email,
+          photoURL: result.user?.photoURL,
+        })
+        .then(() => console.log("user save to db"))
+        .catch((e) => console.log(e));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -140,7 +166,10 @@ const LoginPage = () => {
 
           {/* Social buttons */}
           <div className="grid  gap-3">
-            <button className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-border/50 bg-muted/20 text-sm font-medium text-foreground hover:bg-muted/40 transition-all duration-200">
+            <button
+              onClick={handleGoogleSignIn}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-border/50 bg-muted/20 text-sm font-medium text-foreground hover:bg-muted/40 transition-all duration-200"
+            >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"

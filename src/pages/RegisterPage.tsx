@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth";
 import LoadingSpinner from "../components/LoadingSpinner";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 type RegisterFormData = {
   name: string;
@@ -24,6 +25,7 @@ type RegisterFormData = {
 const RegisterPage = () => {
   const { registerUser, updateUser, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const axiosSecure = useAxiosSecure();
   const {
     register,
     handleSubmit,
@@ -31,14 +33,19 @@ const RegisterPage = () => {
   } = useForm<RegisterFormData>();
 
   const handleRegister = async (data: RegisterFormData) => {
-    console.log(data);
     try {
-      await registerUser(data.email, data.password).then((res: object) =>
-        console.log(res),
-      );
+      const result = await registerUser(data.email, data.password);
       await updateUser({
         displayName: data.name,
       });
+
+      await axiosSecure
+        .post("/create-user", {
+          name: result.user?.displayName,
+          email: result.user?.email,
+        })
+        .then(() => console.log("user save to db"))
+        .catch((e) => console.log(e));
     } catch (error) {
       console.log(error);
     }
