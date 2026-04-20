@@ -90,12 +90,15 @@ const LoginPage = () => {
               <div className="relative group">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
-                  {...register("email")}
+                  {...register("email", { required: true })}
                   type="email"
                   placeholder="you@example.com"
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
                 />
               </div>
+              {errors.email?.type === "required" && (
+                <span className="text-sm text-red-500">Email is required</span>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -105,7 +108,7 @@ const LoginPage = () => {
               <div className="relative group">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
                 <input
-                  {...register("password")}
+                  {...register("password", { required: true })}
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   className="w-full pl-10 pr-12 py-3 rounded-xl bg-muted/40 border border-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-all duration-300 focus:bg-muted/60 focus:border-primary/40 focus:shadow-[0_0_20px_hsla(var(--neon-blue)/0.15)]"
@@ -122,6 +125,11 @@ const LoginPage = () => {
                   )}
                 </button>
               </div>
+              {errors.password?.type === "required" && (
+                <span className="text-sm text-red-500">
+                  Password is required
+                </span>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
@@ -134,12 +142,13 @@ const LoginPage = () => {
                   Remember me
                 </span>
               </label>
-              <button
+              <Link
+                to={"/forgot-password"}
                 type="button"
                 className="text-sm text-primary hover:text-primary/80 transition-colors"
               >
                 Forgot password?
-              </button>
+              </Link>
             </div>
 
             <button
