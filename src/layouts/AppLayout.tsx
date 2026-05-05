@@ -13,6 +13,7 @@ export interface AppLayoutContext {
   setActiveChat: (id: string) => void;
   createChat: (document?: Document) => string;
   addDocument: (file: File) => Document;
+  uploadDocumentAndOpenChat: (file: File) => string;
   deleteDocument: (id: string) => void;
   addMessage: (
     id: string,
@@ -34,10 +35,11 @@ const AppLayout = () => {
 
   const activeChat = state.chats.find((chat) => chat.id === state.activeChat);
 
-  const handleSidebarUpload = (file: File) => {
+  const uploadDocumentAndOpenChat = (file: File) => {
     const document = state.addDocument(file);
-    const newid = state.createChat(document);
-    navigate(`/chat/${newid}`);
+    const newId = state.createChat(document);
+    navigate(`/chat/${newId}`);
+    return newId;
   };
 
   const handleSendMessage = (
@@ -87,7 +89,7 @@ const AppLayout = () => {
         onRenameChat={state.renameChat}
         sidebarOpen={state.sidebarOpen}
         setSidebarOpen={state.setSidebarOpen}
-        onUpload={handleSidebarUpload}
+        onUpload={uploadDocumentAndOpenChat}
       />
 
       <div className="flex-1 flex flex-col gap-3 min-w-0">
@@ -108,6 +110,7 @@ const AppLayout = () => {
                 setActiveChat: state.setActiveChat,
                 createChat: state.createChat,
                 addDocument: state.addDocument,
+                uploadDocumentAndOpenChat,
                 deleteDocument: state.deleteDocument,
                 addMessage: handleSendMessage,
               }}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Paperclip, Sparkles, FileText } from "lucide-react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { Send, Paperclip, Sparkles, FileText, Upload } from "lucide-react";
+import { useOutletContext, useParams } from "react-router-dom";
 import type { AppLayoutContext } from "@/layouts/AppLayout";
 
 const TypingIndicator = () => {
@@ -21,14 +21,14 @@ const TypingIndicator = () => {
 };
 
 const ChatInterface = () => {
-  const { chats, addMessage, createChat } =
+  const { chats, addMessage, uploadDocumentAndOpenChat } =
     useOutletContext<AppLayoutContext>();
   const { id } = useParams();
-  const navigate = useNavigate();
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const emptyFileInputRef = useRef<HTMLInputElement>(null);
   const chat = chats.find((c) => c.id === id);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,13 +36,10 @@ const ChatInterface = () => {
 
   const handleSend = () => {
     const content = input.trim();
-    if (!content) return;
+    if (!content || !chat?.id || !chat.documentId) return;
 
-    const chatId = chat?.id ?? createChat();
+    const chatId = chat.id;
     addMessage(chatId, { role: "user", content });
-    if (!chat?.id) {
-      navigate(`/chat/${chatId}`);
-    }
     setInput("");
     setIsTyping(true);
     setTimeout(() => setIsTyping(false), 2000);
@@ -61,6 +58,50 @@ const ChatInterface = () => {
     e.target.style.height = "auto";
     e.target.style.height = Math.min(e.target.scrollHeight, 160) + "px";
   };
+
+  const needsDocument = !chat || !chat.documentId;
+
+  if (needsDocument) {
+    return (
+      <div className="flex-1 flex items-center justify-center px-6">
+        <input
+          ref={emptyFileInputRef}
+          type="file"
+          accept=".pdf,application/pdf"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              uploadDocumentAndOpenChat(file);
+            }
+            e.target.value = "";
+          }}
+        />
+        <div className="text-center animate-fade-in max-w-md">
+          <div className="w-20 h-20 rounded-3xl gradient-bg-primary mx-auto mb-6 flex items-center justify-center glow-blue floating">
+            <FileText className="w-10 h-10 text-primary-foreground" />
+          </div>
+          <h2 className="text-2xl font-bold gradient-text mb-2">
+            Upload your document to start chatting
+          </h2>
+          <p className="text-muted-foreground mb-8">
+            Upload a PDF to open your chat. Once your document is ready, you can
+            ask questions, get summaries, and extract insights.
+          </p>
+          <button
+            onClick={() => emptyFileInputRef.current?.click()}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl gradient-bg-primary text-primary-foreground font-medium text-sm glow-blue hover:opacity-90 transition-all duration-200 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <Upload className="w-4 h-4" />
+            Upload PDF
+          </button>
+          <p className="text-xs text-muted-foreground/60 mt-4">
+            Supported: PDF
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const isEmpty = !chat || chat.messages.length === 0;
 

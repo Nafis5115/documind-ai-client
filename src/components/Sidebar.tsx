@@ -148,7 +148,7 @@ const Sidebar = ({
             ref={fileInputRef}
             type="file"
             multiple
-            accept=".pdf,.txt,.png,.jpg,.jpeg,.gif,.webp"
+            accept=".pdf,application/pdf"
             className="hidden"
             onChange={(e) => {
               if (e.target.files)
@@ -161,7 +161,7 @@ const Sidebar = ({
             className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl gradient-bg-primary text-primary-foreground font-medium text-sm glow-blue hover:opacity-90 transition-all duration-200 active:scale-[0.98]"
           >
             <Upload className="w-4 h-4" />
-            Upload Document
+            Upload PDF
           </button>
         </div>
 
