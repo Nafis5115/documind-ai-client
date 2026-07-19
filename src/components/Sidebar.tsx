@@ -259,9 +259,11 @@ const Sidebar = ({
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground truncate">
                 {/* {user.name} */}
+                Nafis Shahiar
               </p>
               <p className="text-xs text-muted-foreground truncate">
                 {/* {user.plan} */}
+                Free
               </p>
             </div>
             <button

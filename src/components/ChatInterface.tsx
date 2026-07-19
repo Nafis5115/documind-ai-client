@@ -146,7 +146,7 @@ const ChatInterface = () => {
                 </div>
                 {msg.role === "user" && (
                   <div className="w-8 h-8 rounded-xl gradient-bg-primary flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold text-primary-foreground">
-                    JD
+                    NS
                   </div>
                 )}
               </div>
